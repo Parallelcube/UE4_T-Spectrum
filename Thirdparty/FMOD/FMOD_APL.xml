@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--GearVR plugin additions-->
+<root xmlns:android="http://schemas.android.com/apk/res/android">
+	<!-- init section is always evaluated once per architecture -->
+	<init>
+		<log text="FMOD APL init (shipping build)"/>
+	</init>
+
+	<!-- optional additions to proguard -->
+	<proguardAdditions>
+		<insert>
+			-keep class org.fmod.** {
+			*;
+			}
+			-dontwarn org.fmod.**
+		</insert>
+	</proguardAdditions>
+
+	<!-- optional files or directories to copy to Intermediate/Android/APK -->
+	<resourceCopies>
+		<log text="FMOD APL copying files for $S(Architecture)"/>
+		<copyFile src="$S(PluginDir)/Libraries/Android/$S(Architecture)/libfmod.so"
+					dst="$S(BuildDir)/libs/$S(Architecture)/libfmod.so" />
+		<copyFile src="$S(PluginDir)/Libraries/Android/fmod.jar"
+					dst="$S(BuildDir)/libs/fmod.jar" />
+	</resourceCopies>
+
+	<!-- optional additions to GameActivity onCreate in GameActivity.java -->
+	<gameActivityOnCreateAdditions>
+		<insert>
+		// Initialize FMOD jar file
+		org.fmod.FMOD.init(this);
+		</insert>
+	</gameActivityOnCreateAdditions>
+
+	<!-- optional additions to GameActivity onDestroy in GameActivity.java -->
+	<gameActivityOnDestroyAdditions>
+		<insert>
+		// Shutdown FMOD jar file
+		org.fmod.FMOD.close();
+		</insert>
+	</gameActivityOnDestroyAdditions>
+
+	<!-- optional libraries to load in GameActivity.java before libUE4.so -->
+	<soLoadLibrary>
+		<log text="FMOD APL adding loadLibrary references"/>
+		<loadLibrary name="fmod" failmsg="libfmod not loaded and required!" />
+	</soLoadLibrary>
+</root>
