@@ -119,11 +119,11 @@ void SoundManager_Fmod::getSpectrum_Linear(float* spectrum)
 			{
 				for (int frec = 0; frec < _numSamplesPerBar_linear[index]; ++frec)
 				{
-					++indexFFT;
 					for (int channel = 0; channel < numChannels; ++channel)
 					{
 						spectrum[index] += dspFFT->spectrum[channel][indexFFT];
 					}
+					++indexFFT;
 				}
 				spectrum[index] /= (float)(_numSamplesPerBar_linear[index] * numChannels);
 			}
@@ -192,11 +192,11 @@ void SoundManager_Fmod::getSpectrum_Log(float* spectrum)
 			{
 				for (int frec = 0; frec < _numSamplesPerBar_log[index]; ++frec)
 				{
-					++indexFFT;
 					for (int channel = 0; channel < numChannels; ++channel)
 					{
 						spectrum[index] += dspFFT->spectrum[channel][indexFFT];
 					}
+					++indexFFT;
 				}
 				spectrum[index] /= (float)(_numSamplesPerBar_log[index] * numChannels);
 			}
