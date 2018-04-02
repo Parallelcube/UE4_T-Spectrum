@@ -21,9 +21,11 @@ public:
 		int32 InitSpectrum_Linear(const int32 numBars);
 	UFUNCTION(BlueprintCallable, Category = Init)
 		int32 InitSpectrum_Log(const int32 numBars);
+	UFUNCTION(BlueprintCallable, Category = Init)
+		void InitBeatDetector();
 		
 	UFUNCTION(BlueprintCallable, Category = Actions)
-		int32 PlaySong();
+		int32 PlaySong(int num);
 	UFUNCTION(BlueprintCallable, Category = Actions)
 		void PauseSong(bool unPause);
 	UFUNCTION(BlueprintCallable, Category = Actions)
@@ -32,9 +34,11 @@ public:
 	UFUNCTION(BlueprintPure, Category = Access)
 		const FString& GetSongName() const;
 	UFUNCTION(BlueprintCallable, Category = Access)
-		void GetSpectrum_Linear(TArray<float>& frequencyValues, const int32 effectiveBars);
+		void GetSpectrum_Linear(TArray<float>& frequencyValues, TArray<float>& frequencyAverageValues, const int32 effectiveBars);
 	UFUNCTION(BlueprintCallable, Category = Access)
-		void GetSpectrum_Log(TArray<float>& frequencyValues, const int32 effectiveBars);
+		void GetSpectrum_Log(TArray<float>& frequencyValues, TArray<float>& frequencyAverageValues, const int32 effectiveBars);
+	UFUNCTION(BlueprintCallable, Category = Access)
+		void GetBeat(TArray<float>& frequencyValues, TArray<float>& frequencyAverageValues, bool& isBass, bool& isLowM);
 
 	UAudioManager();
 	~UAudioManager();
