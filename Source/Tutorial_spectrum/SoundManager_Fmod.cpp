@@ -23,7 +23,7 @@ int SoundManager_Fmod::initialize()
 		_system->init(1, FMOD_INIT_NORMAL, NULL);
 
 		_system->createDSPByType(FMOD_DSP_TYPE_FFT, &_dsp);
-		_dsp->setParameterInt(FMOD_DSP_FFT_WINDOWTYPE, FMOD_DSP_FFT_WINDOW_TRIANGLE);
+		_dsp->setParameterInt(FMOD_DSP_FFT_WINDOWTYPE, FMOD_DSP_FFT_WINDOW_HANNING);
 		_dsp->setParameterInt(FMOD_DSP_FFT_WINDOWSIZE, _windowSize);
 	}
 
@@ -325,8 +325,9 @@ void SoundManager_Fmod::getBeat(float* spectrum, float* averageSpectrum, bool& i
 
 			for (int numBand = 0; numBand < numBands; ++numBand)
 			{
-				for (int indexFFT = _beatDetector_bandLimits[numBand]; 
-					indexFFT < _beatDetector_bandLimits[numBand + 1];
+				int bandBoundIndex = numBand * 2;
+				for (int indexFFT = _beatDetector_bandLimits[bandBoundIndex];
+					indexFFT < _beatDetector_bandLimits[bandBoundIndex + 1];
 					++indexFFT)
 				{
 					for (int channel = 0; channel < numChannels; ++channel)
@@ -334,7 +335,7 @@ void SoundManager_Fmod::getBeat(float* spectrum, float* averageSpectrum, bool& i
 						spectrum[numBand] += dspFFT->spectrum[channel][indexFFT];
 					}
 				}
-				spectrum[numBand] /= (_beatDetector_bandLimits[numBand + 1] - _beatDetector_bandLimits[numBand]) * numChannels;
+				spectrum[numBand] /= (_beatDetector_bandLimits[bandBoundIndex + 1] - _beatDetector_bandLimits[bandBoundIndex]) * numChannels;
 			}
 
 			if (_FFTHistory_beatDetector.size() > 0)
