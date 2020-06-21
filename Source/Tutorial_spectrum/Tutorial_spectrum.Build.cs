@@ -19,32 +19,30 @@ public class Tutorial_spectrum : ModuleRules
         //FMOD
         PublicIncludePaths.Add(Path.Combine(thirdPartyPath, "FMOD", "Includes"));
    
-        switch (Target.Platform)
-        {
-            case UnrealTargetPlatform.Win64:
-                PublicLibraryPaths.Add(Path.Combine(thirdPartyPath, "FMOD", "Libraries", "Win64"));
-                PublicAdditionalLibraries.Add("fmod64_vc.lib");
-                string fmodDllPath = Path.Combine(thirdPartyPath, "FMOD", "Libraries", "Win64", "fmod64.dll");
-                RuntimeDependencies.Add(new RuntimeDependency(fmodDllPath));
+		if (Target.Platform == UnrealTargetPlatform.Win64)
+		{
+                PublicAdditionalLibraries.Add(Path.Combine(thirdPartyPath, "FMOD", "Libraries", "Win64","fmod_vc.lib"));
+                string fmodDllPath = Path.Combine(thirdPartyPath, "FMOD", "Libraries", "Win64", "fmod.dll");
+                RuntimeDependencies.Add(fmodDllPath);
 
                 string binariesDir = Path.Combine(basePath,"..","..", "Binaries", "Win64");
                 if (!Directory.Exists(binariesDir))
                     System.IO.Directory.CreateDirectory(binariesDir);
 
-                string fmodDllDest = System.IO.Path.Combine(binariesDir, "fmod64.dll");
+                string fmodDllDest = System.IO.Path.Combine(binariesDir, "fmod.dll");
                 CopyFile(fmodDllPath, fmodDllDest);
-                PublicDelayLoadDLLs.AddRange(new string[] { "fmod64.dll" });
-
-                break;
-            case UnrealTargetPlatform.Android:
-                PublicLibraryPaths.Add(Path.Combine(thirdPartyPath, "FMOD", "Libraries", "Android", "armeabi-v7a"));
-                PublicLibraryPaths.Add(Path.Combine(thirdPartyPath, "FMOD", "Libraries", "Android", "arm64-v8a"));
-                PublicAdditionalLibraries.Add("fmod");
+                PublicDelayLoadDLLs.AddRange(new string[] { "fmod.dll" });
+		}
+        else if (Target.Platform == UnrealTargetPlatform.Android)
+		{
+                PublicAdditionalLibraries.Add(Path.Combine(thirdPartyPath, "FMOD", "Libraries", "Android", "armeabi-v7a","libfmod.so"));
+                PublicAdditionalLibraries.Add(Path.Combine(thirdPartyPath, "FMOD", "Libraries", "Android", "arm64-v8a","libfmod.so"));
                 string RelAPLPath = Utils.MakePathRelativeTo(System.IO.Path.Combine(thirdPartyPath, "FMOD", "FMOD_APL.xml"), Target.RelativeEnginePath);
-                AdditionalPropertiesForReceipt.Add(new ReceiptProperty("AndroidPlugin", RelAPLPath));
-                break;
-            default:
-                throw new System.Exception(System.String.Format("Unsupported platform {0}", Target.Platform.ToString()));
+                AdditionalPropertiesForReceipt.Add("AndroidPlugin", RelAPLPath);
+		}
+		else
+		{
+                //throw new System.Exception(System.String.Format("Unsupported platform {0}", Target.Platform.ToString()));
         }
     }
 
